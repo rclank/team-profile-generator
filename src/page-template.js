@@ -56,7 +56,7 @@ module.exports = templateData => {
             <h1>My Team</h1>
         </header>
         <main>
-            ${team.join('')};
+            ${team.join('')}
         </main>
     </body>
 </html>
