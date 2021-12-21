@@ -69,7 +69,7 @@ const internQuestions = [
     }
 ]
 
-const writeToFile = fileContent => {
+const writeFile = fileContent => {
     fs.writeFileSync(path.join(__dirname, '/dist/index.html'), fileContent);
 };
 
@@ -122,6 +122,6 @@ const promptUser = (teammate = 'Manager', teamData = []) => {
 promptUser()
     .then(teamData => generatePage(teamData))
     .then(htmlPage => {
-        writeToFile(htmlPage);
+        writeFile(htmlPage);
         copyFile();
     });
