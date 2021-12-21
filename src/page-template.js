@@ -42,7 +42,7 @@ module.exports = templateData => {
     const team = managers.concat(engineers, interns);
 
     return `
-    <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="eng">
     <head>
         <meta charset="UTF-8">
