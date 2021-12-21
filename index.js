@@ -1,5 +1,13 @@
+// include classes
+const Manager = require('./lib/Manager');
+const Engineer = require('./lib/Engineer');
+const Intern = require('./lib/Intern');
+
 // include needed packages
 const inquirer = require('inquirer');
+const generatePage = require('./src/page-template');
+const fs = require('fs');
+const path = require('path');
 
 const teammateQuestion = [
     {
@@ -61,6 +69,14 @@ const internQuestions = [
     }
 ]
 
+const writeToFile = fileContent => {
+    fs.writeFileSync(path.join(__dirname, '/dist/index.html'), fileContent);
+};
+
+const copyFile = () => {
+    fs.copyFileSync(path.join(__dirname, '/src/style.css'), path.join(__dirname, '/dist/style.css'));
+}
+
 const promptUser = (teammate = 'Manager', teamData = []) => {
     let questions = basicQuestionsGenerator(teammate);
     const currentTeammate = teammate;
@@ -83,7 +99,13 @@ const promptUser = (teammate = 'Manager', teamData = []) => {
         .then(teammateData => {
             const nextTeammate = teammateData.teammate;
             teammateData.teammate = currentTeammate;
-            teamData.push(teammateData);
+            // class solution trying to use Function as opposed to eval
+            // const employee = Function(`return new ${currentTeammate}(teammateData)`);
+            // teamData.push(employee());
+            // solution using classes below. *note: eval should never be used lol. tried using Function above, but only works if you define variables at Node global scope, which isn't feasible
+            teamData.push(eval(`new ${currentTeammate}(teammateData)`));
+            // original solution below
+            // teamData.push(teammateData);
             if (nextTeammate === 'Finish') {
                 return teamData;
             } else {
@@ -95,9 +117,11 @@ const promptUser = (teammate = 'Manager', teamData = []) => {
                 return promptUser(nextTeammate, teamData);
             }
         })
-
-
 }
 
 promptUser()
-    .then(answers => console.log(answers));
+    .then(teamData => generatePage(teamData))
+    .then(htmlPage => {
+        writeToFile(htmlPage);
+        copyFile();
+    });
